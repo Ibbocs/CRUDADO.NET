@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRUDADO.NET.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -189,6 +190,126 @@ namespace CRUDADO.NET
             }
         }
 
+        public int UpdateStudent(string name, int id)
+        {
 
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                string query = "Update Actor SET Name=@ActorName where Id=@ActorId";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.Parameters.AddWithValue("@ActorName", name);
+                cmd.Parameters.AddWithValue("@ActorId", id);
+                return cmd.ExecuteNonQuery();
+            }
+        }
+
+
+
+        public string InsertData(Actor objcust)
+        {
+
+
+            string result = "";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    using (SqlCommand cmd = new SqlCommand("Usp_InsertUpdateDelete_Customer", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+
+                        cmd.Parameters.AddWithValue("@Name", objcust.Name);
+
+                        connection.Open();
+
+                        result = cmd.ExecuteScalar().ToString();
+                    }
+
+                    return result;
+
+                }
+
+                catch
+
+                {
+
+                    return result = "";
+
+                }
+
+                finally
+
+                {
+
+                    connection.Close();
+
+                }
+            }
+
+
+        }
+
+
+
+
+        public string UpdateData(Customer objcust)
+
+        {
+
+            SqlConnection con = null;
+
+            string result = "";
+
+            try
+
+            {
+
+                con = new SqlConnection(ConfigurationManager.ConnectionStrings["mycon"].ToString());
+
+                SqlCommand cmd = new SqlCommand("Usp_InsertUpdateDelete_Customer", con);
+
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@CustomerID", objcust.CustomerID);
+
+                cmd.Parameters.AddWithValue("@Name", objcust.Name);
+
+                cmd.Parameters.AddWithValue("@Address", objcust.Address);
+
+                cmd.Parameters.AddWithValue("@Mobileno", objcust.Mobileno);
+
+                cmd.Parameters.AddWithValue("@Birthdate", objcust.Birthdate);
+
+                cmd.Parameters.AddWithValue("@EmailID", objcust.EmailID);
+
+                cmd.Parameters.AddWithValue("@Query", 2);
+
+                con.Open();
+
+                result = cmd.ExecuteScalar().ToString();
+
+                return result;
+
+            }
+
+            catch
+
+            {
+
+                return result = "";
+
+            }
+
+            finally
+
+            {
+
+                con.Close();
+
+            }
+
+        }
     }
 }

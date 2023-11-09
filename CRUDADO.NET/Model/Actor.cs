@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CRUDADO.NET.Model
 {
-    internal class Actor
+    public class Actor
     {
         public int Id { get; set; }
         public int Name { get; set; }
