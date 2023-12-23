@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CRUDADO.NET
 {
-    public class Crud
+    public class CrudWithQuery
     {
         static string connectionStringGet = "Data Source=DESKTOP-PHRL2VS;Initial Catalog=Mentor137;Integrated Security=True";
         string connectionString = "Data Source=DESKTOP-PHRL2VS;Initial Catalog=Mentor137;Integrated Security=True";
@@ -93,6 +93,48 @@ namespace CRUDADO.NET
             }
         }
 
+        public List<Actor> GetMethod(string contionationOfQuery)
+        {
+            try
+            {
+                List<Actor> list = new List<Actor>();
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    string query = $"select * from {contionationOfQuery}";
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                while (reader.Read())
+                                {
+                                    Actor actor = new Actor();
+                                    actor.Id = Convert.ToInt32(reader["Id"]);
+                                    actor.Name = Convert.ToString(reader["Name"]);
+                                    list.Add(actor);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Sorguya uygun data tapimayib!!!");
+                            }
+
+                        }
+                    }
+                    connection.Close();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + ex.InnerException);
+                return null;
+            }
+        }
+
         public static void Get()
         {
             using (SqlConnection connection = new SqlConnection(connectionStringGet))
@@ -107,6 +149,14 @@ namespace CRUDADO.NET
                 {
                     //command.Parameters.Add(new SqlParameter("@ActorId", SqlDbType.Int));
                     //command.Parameters["@ActorId"].Value = actorIdToRetrieve;
+                    //command.Parameters.AddWithValue("@Param1", 123);
+                    //command.Parameters.AddWithValue("@Param2", "SampleData");
+
+                    //command.Parameters.Add(new SqlParameter("@Param1", SqlDbType.Int));
+                    //command.Parameters["@Param1"].Value = 123;
+
+                    //command.Parameters.Add(new SqlParameter("@Param2", SqlDbType.VarChar, 50));
+                    //command.Parameters["@Param2"].Value = "SampleData";
 
                     using (SqlDataReader? reader = command.ExecuteReader())
                     {
@@ -204,112 +254,5 @@ namespace CRUDADO.NET
             }
         }
 
-
-
-        public string InsertData(Actor objcust)
-        {
-
-
-            string result = "";
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    using (SqlCommand cmd = new SqlCommand("Usp_InsertUpdateDelete_Customer", connection))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-
-
-                        cmd.Parameters.AddWithValue("@Name", objcust.Name);
-
-                        connection.Open();
-
-                        result = cmd.ExecuteScalar().ToString();
-                    }
-
-                    return result;
-
-                }
-
-                catch
-
-                {
-
-                    return result = "";
-
-                }
-
-                finally
-
-                {
-
-                    connection.Close();
-
-                }
-            }
-
-
-        }
-
-
-
-
-        public string UpdateData(Customer objcust)
-
-        {
-
-            SqlConnection con = null;
-
-            string result = "";
-
-            try
-
-            {
-
-                con = new SqlConnection(ConfigurationManager.ConnectionStrings["mycon"].ToString());
-
-                SqlCommand cmd = new SqlCommand("Usp_InsertUpdateDelete_Customer", con);
-
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@CustomerID", objcust.CustomerID);
-
-                cmd.Parameters.AddWithValue("@Name", objcust.Name);
-
-                cmd.Parameters.AddWithValue("@Address", objcust.Address);
-
-                cmd.Parameters.AddWithValue("@Mobileno", objcust.Mobileno);
-
-                cmd.Parameters.AddWithValue("@Birthdate", objcust.Birthdate);
-
-                cmd.Parameters.AddWithValue("@EmailID", objcust.EmailID);
-
-                cmd.Parameters.AddWithValue("@Query", 2);
-
-                con.Open();
-
-                result = cmd.ExecuteScalar().ToString();
-
-                return result;
-
-            }
-
-            catch
-
-            {
-
-                return result = "";
-
-            }
-
-            finally
-
-            {
-
-                con.Close();
-
-            }
-
-        }
     }
 }

@@ -9,6 +9,6 @@ namespace CRUDADO.NET.Model
     public class Actor
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string Name { get; set; }
     }
 }
